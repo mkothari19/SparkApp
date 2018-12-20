@@ -30,7 +30,7 @@ object OrderManagement {
   val  orderDetailDF =orderDetailDS.toDF()
   temporders.createOrReplaceTempView("orders")
   orderDetailDF.createOrReplaceTempView("orderdetails")
- // val case1=spark.sql("select * from orders") 
+
    val case1=spark.sql("SELECT status,count(status) as count,sum(priceEach*quantityOrdered) as totalsale from orders INNER JOIN orderdetails using(orderNumber) group by status")
    case1.show
    val case2=spark.sql("""select date_format(shippedDate,"yyy") as year,sum(priceEach*quantityOrdered) as totalsale  from orders o INNER JOIN orderdetails od using(orderNumber) where o.status<>'Cancelled' group by year """)
