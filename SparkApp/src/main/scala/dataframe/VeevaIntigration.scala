@@ -38,14 +38,14 @@ object VeevaIntigration  {
 //      System.exit(0)
     }
     
-    locale=args(0).toUpperCase().trim()
-     host = args(1)
-    fillocation = args(2)
-   headerfile=args(3)
-   // locale="us"
-     //host ="http://localhost:8888"
-    //fillocation ="C:\\mydata\\novertis\\Suggestions_dummy2.csv"
-    //headerfile="C:\\mydata\\novertis\\header-info.properties"
+  //  locale=args(0).toUpperCase().trim()
+    // host = args(1)
+    //fillocation = args(2)
+   //headerfile=args(3)
+   locale="us"
+     host ="http://localhost:8888"
+    fillocation ="/Volumes/MYHARDDRIVE/sparkdemoapp/SparkApp/dataset/Suggestions_dummy.csv"
+    headerfile="/Volumes/MYHARDDRIVE/sparkdemoapp/SparkApp/dataset/header-info.properties"
   
     
     val spark = SparkSession.builder().appName("AVIKO SOAP REQUEST").master("local").config("spark.driver.host", "localhost").getOrCreate()
@@ -59,26 +59,24 @@ object VeevaIntigration  {
       "header",
       "true").load(fillocation)
     import spark.implicits._
-
-  //val startTime = System.currentTimeMillis();
-    val data = df.collect()
-    df.foreachPartition(rows =>process(rows))
-   // data.foreach(d => callCreateMasterInvoiceWs(d, host.trim()))
-     println("**************TOTAL NUMBER OF REQUEST MADE***************>>"+locale+"==" + df.count())
-     println("*************TOTAL NUMBER OF SUCESS RESPONSE  COUNT>>"+locale+ "=="+responsecount)
- 
-  // System.out.println("That take " + (endTime - startTime) + " milliseconds");
+     val result= df.map(row=>callCreateMasterInvoiceWs(row))  
+        val report=  result.rdd.map(x=>x.split("#######")).map(r=>Report(r(0),r(1).toInt,r(2)))
+    println(report.first())
+       report.toDF().write.csv("/Volumes/MYHARDDRIVE/sparkdemoapp/SparkApp/dataset/veeva")
     
+    println("**************TOTAL NUMBER OF REQUEST MADE***************>>"+locale+"==" + df.count())
+     println("*************TOTAL NUMBER OF SUCESS RESPONSE  COUNT>>"+locale+ "=="+responsecount)
  
      
   }
   
-  def process(rows:Iterator[Row]):Unit={
+  def getConnection():HttpURLConnection={
+    
      val url = new java.net.URL(host)
-     val conn: HttpURLConnection =
+  val conn: HttpURLConnection =
       url.openConnection.asInstanceOf[java.net.HttpURLConnection]
       try {
-     conn.setRequestMethod("POST")
+   /*  conn.setRequestMethod("POST")
      conn.setDoOutput(true)
      conn.setRequestProperty("Content-Type",(prop.getProperty("Content-Type-"+locale)).toString())
      conn.setRequestProperty("identifier",prop.getProperty("identifier-"+locale).toString())
@@ -86,12 +84,14 @@ object VeevaIntigration  {
      conn.setRequestProperty("keyid",prop.getProperty("keyid-"+locale).trim().toString())
      conn.setRequestProperty("sfdcversion",prop.getProperty("sfdcversion-"+locale).toString())
      conn.setRequestProperty("cache-control",prop.getProperty("cache-control-"+locale).toString())
-    /*  conn.setRequestProperty("Content-Type","text/xml; charset=utf-8")
+  */
+      conn.setRequestProperty("Content-Type","text/xml; charset=utf-8")
+  
      conn.setRequestProperty("identifier","sfdc-phm-gbl-1")
      conn.setRequestProperty("authorization","Basic VXNlcl9BcGlHd1NmZGNBa3RhbmE6QXBpZ3dTZmRjMTIzIQ==")
      conn.setRequestProperty("keyid","b5a6fee1-5577-4d86-adb8-67ac2f9bc2ca")
      conn.setRequestProperty("sfdcversion","40.0")
-     conn.setRequestProperty("cache-control","no-cache")*/
+     conn.setRequestProperty("cache-control","no-cache")
        conn.connect()
         
         } catch {
@@ -99,18 +99,19 @@ object VeevaIntigration  {
         print("Error to connect  " + e.printStackTrace())
      
     }
-     
-       rows.foreach(row=>callCreateMasterInvoiceWs(row,conn))
-       
+      return conn
      
   }
-
-  def callCreateMasterInvoiceWs(row: Row,conn:HttpURLConnection): Unit = {
-
+  
+  def callCreateMasterInvoiceWs(row: Row): String = {
+     
      //   val dateFormatter = new SimpleDateFormat("MM/dd/yyyy")
    // val apiformat = new SimpleDateFormat("yyyy-MM-dd")
-try{
-    val body = new StringBuilder
+    val conn=getConnection
+     val body = new StringBuilder
+     val storage=new StringBuffer()
+      try{
+   
     body.append("<ns1:upsert>\n")
     body.append("<ns1:externalIDFieldName>Suggestion_External_Id_vod__c</ns1:externalIDFieldName>\n")
     body.append("<ns1:sObjects>\n")
@@ -182,20 +183,34 @@ try{
       wr.close()
 
       val responseCode = conn.getResponseCode
-        val resp: Option[Elem]=   Some(XML.load(conn.getInputStream))
+      val resp: Option[Elem]=   Some(XML.load(conn.getInputStream))
         
         if (resp != null && resp.isDefined) {
       println("############RESPONSE CODE############# "+responseCode)    
       println("############ Response#################\n" + resp.get.toString)
     }
     
+     storage.append(body.toString())
+     storage.append("#######")
+     storage.append(responseCode)
+      storage.append("#######")
+     storage.append(resp.get.toString)
+    return storage.toString()
 }catch{
        case e: Exception =>
         print("Exception to submit a request: " + e.printStackTrace())
-       
-      
+        storage.append(body.toString())
+     storage.append("#######")
+     storage.append(0)
+     storage.append("#######")
+     storage.append("WEB SERVICE FAILED TO RESPOND")
+     return storage.toString()
     }
+
   }
+  
+  case class Report(request:String,reponseCode:Int,response:String)
+  
 
   def wrap(xml: String): String = {
     val buf = new StringBuilder
