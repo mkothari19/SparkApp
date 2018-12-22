@@ -6,8 +6,9 @@ import org.apache.spark.sql.functions._
 import java.net.HttpURLConnection
 import java.io.DataOutputStream
 import org.apache.spark.sql.Row
+import util.Context
 
-object OrderManagement {
+object OrderManagement extends Context{
   case class orders(orderNumber: Option[Int], orderDate:String,
                     requiredDate: String, shippedDate: String,
                     status: String, comments: String, customerNumber: Option[Int])
@@ -16,8 +17,7 @@ object OrderManagement {
   def main(args: Array[String]): Unit = {
     val format = new java.text.SimpleDateFormat("yyyy-dd-MM")
 
-    val spark = SparkSession.builder().appName("Order Management").master("local[*]").getOrCreate()
-
+   
     val ordersdata = spark.read.textFile("/Volumes/MYHARDDRIVE/dataset/orders.txt")
     val orderdetaildata = spark.read.textFile("/Volumes/MYHARDDRIVE/dataset/orderdetails.txt")
     import spark.implicits._

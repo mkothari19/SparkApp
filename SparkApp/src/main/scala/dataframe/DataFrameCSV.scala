@@ -2,15 +2,15 @@ package dataframe
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import util.Context
  
-object DataFrameCSV {
+object DataFrameCSV extends Context{
   def main(args: Array[String]): Unit = {
    if(args.length!=1){
      println("Please provide input file path")
    //System.exit(1)
    }
    val path="/Volumes/MYHARDDRIVE/sparkdemoapp/SparkApp/dataset/autos.csv"
-   val spark=SparkSession.builder().appName("DATA CSV PROCESSING").master("local[4]").getOrCreate()
    val data=spark.read.format("com.databricks.spark.csv").option("header","true").load(path) 
     data.show
     data.createOrReplaceTempView("Vehicle")
