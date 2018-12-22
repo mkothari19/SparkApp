@@ -2,12 +2,13 @@ package dataframe
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import util.Context
 
-object BroadCastDemo {
+object BroadCastDemo extends Context{
 case class Employee(name:String, age:Int, depId: String)
 case class Department(id: String, name: String)
   def main(args: Array[String]): Unit = {
-    val spark=SparkSession.builder().appName("Borad Cast Variable").master("local[7]").getOrCreate()
+  
  import spark.implicits._
     val employeesDF = spark.sparkContext.parallelize(Seq( 
     Employee("Mary", 33, "IT"), 

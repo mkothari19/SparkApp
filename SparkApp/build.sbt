@@ -1,4 +1,4 @@
-name:= "uber-case-study"
+name:= "spark-app"
 version:= "1.0"
 scalaVersion:= "2.11.8"
 
@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-streaming" % "2.2.0" % "provided",
  "org.apache.spark" %% "spark-streaming-kafka-0-10" % "2.2.0",
   "com.databricks" %% "spark-csv" % "1.5.0",
-   "org.apache.spark" %% "spark-mllib" % "2.2.0" % "runtime"
+   "org.apache.spark" %% "spark-mllib" % "2.2.0" % "runtime",
+  
   
 
  )

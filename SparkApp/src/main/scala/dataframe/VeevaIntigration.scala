@@ -20,8 +20,9 @@ import org.apache.hadoop.fs.FileSystem
 import java.io.InputStream
 import com.google.common.base.Stopwatch
 import java.util.ArrayList
+import util.Context
 
-object VeevaIntigration  {
+object VeevaIntigration extends Context{
   
   var responsecount=0
    var prop : Properties = null
@@ -47,9 +48,6 @@ object VeevaIntigration  {
     fillocation ="/Volumes/MYHARDDRIVE/sparkdemoapp/SparkApp/dataset/Suggestions_dummy.csv"
     headerfile="/Volumes/MYHARDDRIVE/sparkdemoapp/SparkApp/dataset/header-info.properties"
   
-    
-    val spark = SparkSession.builder().appName("AVIKO SOAP REQUEST").master("local").config("spark.driver.host", "localhost").getOrCreate()
-     
       val path:Path=new Path(headerfile)
       val fs:FileSystem=FileSystem.get(spark.sparkContext.hadoopConfiguration)
       val inputStream:InputStream=fs.open(path);
