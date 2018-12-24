@@ -30,7 +30,7 @@
         /Volumes/MYHARDDRIVE/dataset/systemhealth.sh|./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic systemhealth
     
     
-      e)Run spark jon available in package dataframe.structurestream.SystemHealth
+      e)Run spark job available in package dataframe.structurestream.SystemHealth
     
     This job perform some aggregation top of the available data set and send messages to kafka topic name(create new topic like systemhealthoutput)
      f) Start  services of elasticsearch,logstash and kibana
