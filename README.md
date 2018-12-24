@@ -30,15 +30,15 @@
         /Volumes/MYHARDDRIVE/dataset/systemhealth.sh|./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic systemhealth
     
     
-      e)Run spark job available in package dataframe.structurestream.SystemHealth
+     2. Run spark job available in package dataframe.structurestream.SystemHealth
     
     This job perform some aggregation top of the available data set and send messages to kafka topic name(create new topic like systemhealthoutput)
-     f) Start  services of elasticsearch,logstash and kibana
+     3.  Start  services of elasticsearch,logstash and kibana
     
-    g) Create conf file to generate indexs for generated mesaages in kafka.File system.conf available in dataset folder
+    a) Create conf file to generate indexs for generated mesaages in kafka.File system.conf available in dataset folder
     
-    h)Run logstash script to create a index
+    b)Run logstash script to create a index
        logstash -f /Volumes/MYHARDDRIVE/dataset/logstashconfig/systemhealth/system.conf
     
-    i)Open kibana dash board a see your messages are indexed.Now you can visulize your data.  
+    4. Open kibana dash board a see your messages are indexed.Now you can visulize your data.  
         
