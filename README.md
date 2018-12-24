@@ -35,7 +35,7 @@
     This job perform some aggregation top of the available data set and send messages to kafka topic name(create new topic like systemhealthoutput)
      3.  Start  services of elasticsearch,logstash and kibana
     
-    a) Create conf file to generate indexs for generated mesaages in kafka.File system.conf available in dataset folder
+    a) Create conf file to generate indexs for available mesaages in kafka topic.File system.conf available in dataset folder
     
     b)Run logstash script to create a index
        logstash -f /Volumes/MYHARDDRIVE/dataset/logstashconfig/systemhealth/system.conf
