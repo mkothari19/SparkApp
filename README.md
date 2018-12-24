@@ -16,19 +16,29 @@
 5.Structure Streaming 
    Here i created simple structure streaming pipeline using kafka,spark,elastic search and kibana.
    Step :
+   
     1. Start kafka 
        a) ./bin/zookeeper-server-start.sh config/zookeeper.properties
+       
        b) ./bin/kafka-server-start.sh config/server.properties
+       
        c) create kafka topic using below command 
+       
        ./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic            systemhealth
+       
        d) I created shell script name systemhealth.sh and this availabel in dataset folder.This script work as a producer to             generate message like system memory,cpu and disk usages.Below is the way to execute the script
         /Volumes/MYHARDDRIVE/dataset/systemhealth.sh|./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic systemhealth
     
+    
       e)Run spark jon available in package dataframe.structurestream.SystemHealth
-         This job perform some aggregation top of the available data set and send messages to kafka topic name(create new topic like systemhealthoutput)
+    
+    This job perform some aggregation top of the available data set and send messages to kafka topic name(create new topic like systemhealthoutput)
      f) Start  services of elasticsearch,logstash and kibana
-     g) Create conf file to generate indexs for generated mesaages in kafka.File system.conf available in dataset folder
-     h)Run logstash script to create a index
+    
+    g) Create conf file to generate indexs for generated mesaages in kafka.File system.conf available in dataset folder
+    
+    h)Run logstash script to create a index
        logstash -f /Volumes/MYHARDDRIVE/dataset/logstashconfig/systemhealth/system.conf
-     i)Open kibana dash board a see your messages are indexed.Now you can visulize your data.  
+    
+    i)Open kibana dash board a see your messages are indexed.Now you can visulize your data.  
         
