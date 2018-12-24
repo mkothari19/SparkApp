@@ -36,7 +36,7 @@ object DataFrameOperation extends Context{
     orderDF.printSchema()
     //Cast DataFrame column into spacific data type
    val orderDFNew= orderDF.select(orderDF.col("ordernumber").cast("integer"),orderDF.col("orderdate").cast("date"),orderDF.col("requireddate").cast("date"),
-                  orderDF.col("shippeddate").cast("date"),orderDF.col("status"),orderDF.col("comments"),orderDF.col("customerNumber").cast("integer"))
+                  orderDF.col("shippeddate").cast("timestamp"),orderDF.col("status"),orderDF.col("comments"),orderDF.col("customerNumber").cast("integer"))
        orderDFNew.printSchema()
        
    orderDetailDS.show
