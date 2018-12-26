@@ -1,10 +1,10 @@
-package dataframe.structurestream
+package structurestreaming
 
 import util.Context
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.TimestampType
 import org.apache.spark.sql.streaming.OutputMode
+import scala.reflect.api.materializeTypeTag
 
 object SystemHealth extends App with Context{
   case class syshealth(event:String,mem:String,disk:String,cpu:String)
