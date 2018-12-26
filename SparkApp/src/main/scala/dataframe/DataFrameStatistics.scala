@@ -29,5 +29,26 @@ object DataFrameStatistics extends App with Context {
      orderDetailsDF.select(mean("priceEach")).show
      //Sum
         orderDetailsDF.select(sum("priceEach")).show
-     
+
+        orderDF.show()
+        orderDetailsDF.show
+        //Group with statistic
+      orderDF
+    .filter("comments is not null")
+    .join(orderDetailsDF, orderDetailsDF.col("orderNumber").equalTo(orderDF("orderNumber")))
+    .groupBy(orderDF.col("status"))
+    .agg(avg("priceEach"), max("priceEach"))
+    .show() 
+    //DataFrame Statistics using describe() method   
+   val orderDFStatistic= orderDetailsDF.describe()
+   orderDFStatistic.show()
+   //Correlation
+   val correlation=orderDetailsDF.stat.corr("priceEach","quantityOrdered")
+   print("Correlation between priceEach and quantityOrdered"+correlation)
+   //Covariance
+   val covariance=orderDetailsDF.stat.cov("priceEach","quantityOrdered")
+   print("Covariance between priceEach and quantityOrdered"+covariance)
+   //Frequent Items
+   val frequent=orderDF.stat.freqItems(Seq("comments"))
+ frequent.show()
 }
